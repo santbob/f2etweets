@@ -1,6 +1,22 @@
-!!!
+!!! 5
 html
-  head
+    head
+    meta(name="viewport", content="width=device-width")
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body!= body
+    block styles
+        include partials/styles
+    block scripts
+        script(src='/javascripts/jquery.min.js')
+        script(src='/javascripts/knockout-2.0.0.js')
+  body
+      .container
+            .row.display
+                .twelve.columns
+                    a(href='/')
+                        h1 F2E Tweets - Node Boot Camp
+            !{body}
+            .row
+                .twelve.columns
+                    footer
+                        Docent
+

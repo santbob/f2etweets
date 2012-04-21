@@ -4,33 +4,44 @@
  */
 
 var express = require('express')
-  , routes = require('./routes');
+  , routes = require('./routes'), twit = require('./helper/twitter');
 
-var app = module.exports = express.createServer();
-
+var server = module.exports = express.createServer();
+var io = require('socket.io').listen(server);
 // Configuration
 
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
+server.configure(function(){
+  server.set('views', __dirname + '/views');
+  server.set('view engine', 'jade');
+  server.use(express.bodyParser());
+  server.use(express.methodOverride());
+  server.use(server.router);
+  server.use(express.static(__dirname + '/public'));
 });
 
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+server.configure('development', function(){
+  server.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
-app.configure('production', function(){
-  app.use(express.errorHandler());
+server.configure('production', function(){
+  server.use(express.errorHandler());
 });
 
 // Routes
 
-app.get('/', routes.index);
-
-app.listen(3000, function(){
-  console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+server.get('/', routes.index);
+server.get('/home', function(req, res){
+        res.render('home', {
+        title: 'Home',
+        data:{
+            'html': twit.htmlQuery(),
+            'js': twit.jsQuery(),
+            'css': twit.cssQuery()
+        }
+    });
 });
+server.listen(3000, function(){
+  console.log("Express server listening on port %d in %s mode", server.address().port, server.settings.env);
+});
+
+

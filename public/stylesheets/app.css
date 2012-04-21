@@ -1,0 +1,57 @@
+/* Foundation v2.2.1 http://foundation.zurb.com */
+/* Artfully masterminded by ZURB  */
+
+/* -------------------------------------------------- 
+   Table of Contents
+-----------------------------------------------------
+:: Shared Styles
+:: Page Name 1
+:: Page Name 2
+*/
+
+
+/* -----------------------------------------
+   Shared Styles
+----------------------------------------- */
+body{
+    background-color:#F3F3F3;
+}
+
+.message{
+    border: 1px dotted #CCC;
+    margin-left: 0px;
+    margin-top: 0px;
+    padding-left:0px;
+    padding-top:5px;
+    padding-bottom:5px;
+    margin-bottom:0px;
+    background-color: white;
+}
+
+#chatarea{
+    text-align:left;
+    min-height: 450px;
+}
+
+ul#chat{
+    background-color:white;
+    min-height:450px;
+    max-height:450px;
+    margin-left:0px;
+    padding-left:0px;
+    overflow: scroll;
+    border: 1px solid #CCC;
+}
+
+/* -----------------------------------------
+   Page Name 1
+----------------------------------------- */
+
+
+
+
+/* -----------------------------------------
+   Page Name 2
+----------------------------------------- */
+
+
