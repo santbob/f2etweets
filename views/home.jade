@@ -1,19 +1,17 @@
-#chatarea.row.display
-    h3= title
-    .eight.columns(style="text-align:left;")
+#f2etweets.row
     if data.css
-        div#css
+        div.css.tweets
                 H2 CSS Tweets
                 for tweet in data.css
                         div=tweet.text
     if data.js
-        div#js
+        div.js.tweets
                 H2 JS Tweets
                 for tweet in data.js
                         div=tweet.text
 
     if data.html
-        div#html
+        div.html.tweets
                 H2 Html Tweets
                 for tweet in data.html
                         div=tweet.text

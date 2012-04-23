@@ -1,5 +1,3 @@
-/* Foundation v2.2.1 http://foundation.zurb.com */
-/* Artfully masterminded by ZURB  */
 
 /* -------------------------------------------------- 
    Table of Contents
@@ -16,31 +14,25 @@
 body{
     background-color:#F3F3F3;
 }
-
-.message{
-    border: 1px dotted #CCC;
-    margin-left: 0px;
-    margin-top: 0px;
-    padding-left:0px;
-    padding-top:5px;
-    padding-bottom:5px;
-    margin-bottom:0px;
-    background-color: white;
+.tweets {
+    display: inline-block;
+    zoom: 1; *display: inline; /* IE < 8: fake inline-block */
+    letter-spacing: normal;
+    word-spacing: normal;
+    vertical-align: top;
 }
-
-#chatarea{
-    text-align:left;
-    min-height: 450px;
+.tweets H2{padding:5px;background:#444;color:#eee;}
+.html, .css,.js {
+    width:30%;
+    border-radius:5px 5px;
+    border:1px solid #dedede;
+    padding:5px;
+    margin-right:5px;
 }
-
-ul#chat{
-    background-color:white;
-    min-height:450px;
-    max-height:450px;
-    margin-left:0px;
-    padding-left:0px;
-    overflow: scroll;
-    border: 1px solid #CCC;
+.tweets > div {
+     border-bottom:1px solid #dfdfdf;
+     padding:3px;
+     color:#444;
 }
 
 /* -----------------------------------------
