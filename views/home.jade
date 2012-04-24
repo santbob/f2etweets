@@ -3,15 +3,55 @@
         div.css.tweets
                 H2 CSS Tweets
                 for tweet in data.css
-                        div=tweet.text
+                        -var html = "<div>"+tweet.text+"</div>"
+                        !{html}
     if data.js
         div.js.tweets
                 H2 JS Tweets
                 for tweet in data.js
-                        div=tweet.text
-
+                        -var html = "<div>"+tweet.text+"</div>"
+                        !{html}
     if data.html
         div.html.tweets
                 H2 Html Tweets
                 for tweet in data.html
-                        div=tweet.text
+                        -var html = "<div>"+tweet.text+"</div>"
+                        !{html}
+block append scripts
+    script(src="/javascripts/dateformat.js")
+    script(src="/socket.io/socket.io.js")
+    script(type="text/javascript")
+        function TweetsUpdater(){
+           var self = this;
+           self.run = function (data){
+                self.uptweets(data.html,'.html h2');
+                self.uptweets(data.css,'.css h2');
+                self.uptweets(data.js,'.js h2'); 
+           };
+
+           self.uptweets = function (tweets,clz){
+                   var html = '', tweetsblk = $(clz);
+                   if(tweets && tweets.length > 0){
+                           for(var i=0,j=tweets.length;i<j; i+=1){
+                                   var tweet = tweets[i];
+                                   if(tweet){
+                                        html += "<div>"+tweet.text+"</div>";
+                                   }
+                           }
+                           if(tweetsblk && html){
+                                   tweetsblk.after(html);
+                           }  
+                   }
+           };
+
+        }
+        
+        var socket = io.connect(), tweetsupdater = new TweetsUpdater();
+        socket.on('connect', function(){
+        });
+
+        socket.on('updatetweets', function(data){
+            if(tweetsupdater){
+                tweetsupdater.run(data);
+            }
+        });

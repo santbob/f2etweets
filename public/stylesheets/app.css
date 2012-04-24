@@ -34,7 +34,13 @@ body{
      padding:3px;
      color:#444;
 }
-
+.tweets > div > a{
+     color: #111;
+     cursor:pointer
+}
+.tweets > div > a:hover{
+     color: #e50000;
+}
 /* -----------------------------------------
    Page Name 1
 ----------------------------------------- */
