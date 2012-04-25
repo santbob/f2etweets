@@ -51,26 +51,24 @@ search = function (query,key,oldtimestamp){
            var datakey = key;
            if(res.results){
                 var results = new Array();
+                console.log('old timestamp for key=', datakey, " is ", lasttimestamp); 
                 for(var i = 0, j = res.results.length; i < j ; i+=1){
                         var tweet = res.results[i], isnewtweet;
-                        
-                        /*var date = new Date(Date.parse(tweet.created_at)).toLocaleString().substr(0, 16);
-                        //var tweettimems = new Date(tweet.created_at).getMilliseconds();
-                        var tweettimems = date.getMilliseconds();
-                        isnewtweet = (tweettimems - oldtimestamp)> 0? true: false;
-                        console.log('tweet.created_at = ',tweet.created_at);
-                        console.log("oldtimestamp ", oldtimestamp);
-                        console.log("tweetime     ", tweettimems);
-                        console.log("is new tweet ", isnewtweet);
+                        var date = new Date(Date.parse(tweet.created_at));
+                        var tweettimems = date.getTime();
+                        console.log('old timestamp for key=', datakey, " is ", lasttimestamp);
+                        console.log('twe timestamp for key=', datakey, " is ", tweettimems);
+                        console.log('difference in timestamp is', tweettimems-oldtimestamp);
+                        isnewtweet = tweettimems > oldtimestamp;
+                        console.log('is new tweet?', isnewtweet);
                         if(isnewtweet){
-                            */
                             var result = {
                                 id: tweet.id,
                                 text: twithelper.autoLink(tweet.text),
                                 geo: tweet.geo
                             }
                             results.push(result);
-                        //}
+                        }
                 }
                 data[datakey] = results;
            }
@@ -107,10 +105,10 @@ server.get('/', function(req, res){
         data: data
     });
 });
-var timer = new Timer(60000);
+var timer = new Timer(6000);
 timer.addListener('timer', function (){
         //console.log('timer ', timer.currentCount, timer.repeatCount);
-        var currenttime = new Date().getMilliseconds();
+        var currenttime = new Date().getTime();
         f2etweets();
         lasttimestamp = currenttime;
         io.sockets.emit('updatetweets',data);
