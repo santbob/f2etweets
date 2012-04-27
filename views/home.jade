@@ -1,26 +1,16 @@
 #f2etweets.row
-    if data.css
         div.css.tweets
                 H2 CSS Tweets
-                for tweet in data.css
-                        -var html = "<div>"+tweet.text+"</div>"
-                        !{html}
-    if data.js
         div.js.tweets
                 H2 JS Tweets
-                for tweet in data.js
-                        -var html = "<div>"+tweet.text+"</div>"
-                        !{html}
-    if data.html
         div.html.tweets
                 H2 Html Tweets
-                for tweet in data.html
-                        -var html = "<div>"+tweet.text+"</div>"
-                        !{html}
 block append scripts
-    script(src="/javascripts/dateformat.js")
+    script(src="/js/EventTarget.js")
+    script(src="/js/Timer.js")
     script(src="/socket.io/socket.io.js")
     script(type="text/javascript")
+        var socket = io.connect(), tweetsupdate, lastuptime = 0, timer = new Timer(60000,5), emitfetch;
         function TweetsUpdater(){
            var self = this;
            self.run = function (data){
@@ -45,13 +35,29 @@ block append scripts
            };
 
         }
-        
-        var socket = io.connect(), tweetsupdater = new TweetsUpdater();
-        socket.on('connect', function(){
-        });
 
+        emitfetch = function(){
+                socket.emit('fetchTweets',{time:lastuptime});
+                lastuptime = new Date().getTime();
+        }; 
+
+        tweetsupdater = new TweetsUpdater();
+        
+        socket.on('connect', function(){
+                emitfetch();
+        });
+        
         socket.on('updatetweets', function(data){
             if(tweetsupdater){
                 tweetsupdater.run(data);
             }
         });
+        
+        timer.addListener('timerComplete', function () {
+                console.log('TimerComplete Event', timer.currentCount(), timer.repeatCount());
+        });
+        
+        timer.addListener('timer', function (){
+                emitfetch();
+        });
+        

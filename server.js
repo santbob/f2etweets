@@ -1,14 +1,14 @@
 var express = require('express')
   , routes = require('./routes'), twitter = require('twitter'), qs = require('querystring'), twithelper = require('twitter-text'), Timer = require('./timers').Timer;
-
+var F2etweets = require('./models/f2etweets').F2etweets;
 var server = module.exports = express.createServer();
 var io = require('socket.io').listen(server);
-var twit = new twitter({
+/*var twit = new twitter({
         consumer_key: 'iv9erP65Rf0yDpIYI9ZMg',
         consumer_secret: '2ygQaFHRIQVdPE4qdfxowuWm8S8y2yEDgVBAzdsmLp0',
         access_token_key: '66309838-Yt2U301fkIAz3yKjIaIu4p9rz3Z0zukxwrOhByKG6',
         access_token_secret: '1f7iQqPazcArsfZdTUpouEeLa7IySyZlE6JNw8N8'
-});
+});*/
  
 
 // Configuration
@@ -37,28 +37,17 @@ io.configure(function () {
   io.set("polling duration", 10);
 });
 
-io.sockets.on('connection', function (socket) {
-  socket.on('updatetweets', function (data) {
-    /*var message = mapper.createChatMessage(socket.username, data);
-    io.sockets.emit('updatechat', message);
-    logMessage(message);*/
-  });
-});
-
-var jsQuery, cssQuery, htmlQuery, search, f2etweets, data = {}, lasttimestamp = 0;
+/*var jsQuery, cssQuery, htmlQuery, search, f2etweets, data = {}, lasttimestamp = 0;
 search = function (query,key,oldtimestamp){
         twit.search(query,function(res){
            var datakey = key;
            if(res.results){
                 var results = new Array();
-                console.log('old timestamp for key=', datakey, " is ", lasttimestamp); 
                 for(var i = 0, j = res.results.length; i < j ; i+=1){
                         var tweet = res.results[i], isnewtweet;
                         var date = new Date(Date.parse(tweet.created_at));
                         var tweettimems = date.getTime();
-                        console.log('old timestamp for key=', datakey, " is ", lasttimestamp);
-                        console.log('twe timestamp for key=', datakey, " is ", tweettimems);
-                        console.log('difference in timestamp is', tweettimems-oldtimestamp);
+                        oldtimestamp = oldtimestamp || 0; 
                         isnewtweet = tweettimems > oldtimestamp;
                         console.log('is new tweet?', isnewtweet);
                         if(isnewtweet){
@@ -75,37 +64,45 @@ search = function (query,key,oldtimestamp){
         });
 };
 
-jsQuery = function (){
+jsQuery = function (time){
         var query = 'js OR javascript OR ecmascript from:addy_osmani OR from:badass_js OR from:smashingmag OR from:jsprf OR from:__DavidFlanagan OR from:slicknet OR from:jeresig';
-        return search(query,'js',lasttimestamp);
+        return search(query,'js',time);
 };
 
-htmlQuery = function (){
+htmlQuery = function (time){
         var query = 'html OR html5 from:slicknet OR from:thierrykoblentz';
-        return search(query,'html',lasttimestamp);
+        return search(query,'html',time);
 };
 
-cssQuery = function (){
+cssQuery = function (time){
         var query = 'css OR css3 from:slicknet OR from:thierrykoblentz';
-        return search(query,'css',lasttimestamp);
+        return search(query,'css',time);
 };
 
-f2etweets = function (){
-        jsQuery();
-        htmlQuery();
-        cssQuery();
+f2etweets = function(time){
+        jsQuery(time);
+        htmlQuery(time);
+        cssQuery(time);
 };
-f2etweets();
-
+*/
+console.log('f2etweets object',F2etweets)
+io.sockets.on('connection', function (socket) {
+  socket.on('fetchTweets', function (timerobj) {
+        console.log('fetchTweets Event Recieved and time to start is ',timerobj.time);
+        var f2e = new F2etweets(timerobj.time);        
+        f2e.query();
+        socket.emit('updatetweets',f2e.data);
+  });
+});
 // Routes
 //server.get('/', routes.index);
 server.get('/', function(req, res){
         res.render('home', {
         title: 'Home',
-        data: data
+        data: []
     });
 });
-var timer = new Timer(6000);
+/*var timer = new Timer(6000);
 timer.addListener('timer', function (){
         //console.log('timer ', timer.currentCount, timer.repeatCount);
         var currenttime = new Date().getTime();
@@ -117,6 +114,7 @@ timer.addListener('timerComplete', function () {
   //console.log('timerComplete', timer.currentCount, timer.repeatCount);
 });
 timer.start();
+*/
 server.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", server.address().port, server.settings.env);
 });
