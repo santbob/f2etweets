@@ -10,9 +10,7 @@
 
     function F2etweets(lastuptime) {
         this._constructor.apply(this, arguments);
-        this.data = [];
-        this.lastuptime = lastuptime || 0;
-        console.log('testing here');
+        this.lastuptime = lastuptime;
     }
 
     F2etweets.HTML = 'html OR html5 from:slicknet OR from:thierrykoblentz';
@@ -20,10 +18,10 @@
     F2etweets.CSS = 'css OR css3 from:slicknet OR from:thierrykoblentz';
     F2etweets.prototype = new events.EventEmitter();
     F2etweets.prototype._constructor = function (lastuptime) {
-        this.data = [];
         this.lastuptime = lastuptime || 0;
     };
-	F2etweets.prototype.search = function (query, key) {
+	F2etweets.prototype.search = function (query, key, fn) {
+		var self = this, datakey = key, data = {};
 		twit.search(query, function (res) {
 			if (res.results) {
 				var results = [], i, j = res.results.length, isnewtweet, date, tweettimems, result, tweet;
@@ -31,7 +29,7 @@
 					tweet = res.results[i];
 					date = new Date(Date.parse(tweet.created_at));
 					tweettimems = date.getTime();
-					isnewtweet = tweettimems > this.lastuptime;
+					isnewtweet = Number(tweettimems) > Number(self.lastuptime);
 					if (isnewtweet) {
 						result = {
 							id: tweet.id,
@@ -41,17 +39,15 @@
 						results.push(result);
 					}
 				}
-				this.data[key] = results;
+				data[datakey] = results;
+				fn(data);
 			}
         });
     };
-	F2etweets.prototype.query = function () {
-		this.search(F2etweets.HTML, 'html');
-		this.search(F2etweets.JS, 'js');
-		this.search(F2etweets.CSS, 'css');
-	};
-	F2etweets.prototype.data = function () {
-		return this.data;
+	F2etweets.prototype.query = function (callback) {
+		this.search(F2etweets.HTML, 'html', callback);
+		this.search(F2etweets.JS, 'js', callback);
+		this.search(F2etweets.CSS, 'css', callback);
 	};
 
 	if (typeof exports !== 'undefined') {

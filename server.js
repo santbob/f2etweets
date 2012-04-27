@@ -31,11 +31,13 @@ io.configure(function () {
 io.sockets.on('connection', function (socket) {
 	socket.on('fetchTweets', function (timerobj) {
 		console.log('fetchTweets Event Recieved and time to start is ', timerobj.time);
-        var f2e = new F2etweets(timerobj.time);
-		f2e.query();
-        socket.emit('updatetweets', f2e.data);
+		var f2e = new F2etweets(timerobj.time), thissocket = socket;
+		f2e.query(function (response) {
+			thissocket.emit('updatetweets', response);
+		});
 	});
 });
+
 // Routes
 //server.get('/', routes.index);
 server.get('/', function (req, res) {
